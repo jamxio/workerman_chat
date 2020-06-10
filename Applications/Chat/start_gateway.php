@@ -18,11 +18,25 @@ use \Workerman\Autoloader;
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 // gateway 进程
-$gateway = new Gateway("Websocket://0.0.0.0:7272");
+$gateway = new class("Websocket://0.0.0.0:7272") extends Gateway{
+    public function onClientMessage($connection, $data)
+    {
+        $aa = json_decode($data,true);
+        if($aa['type'] == 'say'){
+            if(!$aa['content']){
+                return false;
+            }
+            isset($aa['content']['img']) && $aa['content'] = urlencode($aa['content']);
+            $data = json_encode($aa);
+        }
+        return parent::onClientMessage($connection, $data);
+        // $connection->send(json_encode(['type'=>'id','id' => $connection->id]));
+    }
+};
 // 设置名称，方便status时查看
 $gateway->name = 'ChatGateway';
 // 设置进程数，gateway进程数建议与cpu核数相同
-$gateway->count = 4;
+$gateway->count = 1111;
 // 分布式部署时请设置成内网ip（非127.0.0.1）
 $gateway->lanIp = '127.0.0.1';
 // 内部通讯起始端口。假如$gateway->count=4，起始端口为2300
