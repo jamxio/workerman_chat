@@ -83,10 +83,10 @@
               // 发言
               case 'say':
                   let content = data.content;
-                  try{
-                      content = JSON.parse(content.replace(/&quot;/g,'"'));
-                  }catch (e) {
-                    console.log(e);
+                  try {
+                      content = JSON.parse(content.replace(/&quot;/g, '"'));
+                  } catch (e) {
+                      console.log(e);
                   }
                   if (typeof content == 'object' && content.img) {
                       content = '<img src="' + content.img + '"/>';
@@ -108,7 +108,6 @@
                   break;
               case'id':
                   yourId = data.id;
-                  console.log(e);
                   break;
           }
       }
@@ -163,6 +162,15 @@
           userlist_window.append('</ul>');
       }
 
+      /**
+       * 判断客户端id是不是自己
+       * @param client_id
+       * @return {boolean}
+       */
+      function isYou(client_id) {
+          return yourId == client_id;
+      }
+
       // 发言
       function say(from_client_id, from_client_name, content, time, isPictur = false) {
           let isYou = yourId == from_client_id;
@@ -172,7 +180,7 @@
               }
           );
           content = content.replace(/data:image[\S]+=?/gi, function (img) {
-                  img = img.replace(/=/g,'');
+                  img = img.replace(/=/g, '');
                   return "<a target='_blank' href='" + img + "'>" + "<img src='" + img + "'>" + "</a>";
               }
           );
@@ -184,15 +192,28 @@
                       return url;
               }
           );
-
-          $("#dialog").append('' +
-              '<div class="speech_item">' +
-              '<img src="http://lorempixel.com/38/38/?' + from_client_id + '" class="user_icon" /> '
-              + from_client_name + (isYou ? "<strong>(自己)</strong>" : '') + ' ' +
-              '<br> ' + time + '' +
+          let isYourself = isYou(from_client_id);
+          let sessionHtml = isYourself
+              ? '<div class="speech_item" style="float: right;">'
+              + '<img src="http://lorempixel.com/38/38/?' + from_client_id + '" class="user_icon" style="float: right;" /> ' +
+              '<div style="float:right;text-align:right;">'
+              + from_client_name + "<strong>(自己)</strong>"
+              + '<br> ' + time +
+              '</div>' +
               '<div style="clear:both;"></div>' +
               '<p class="triangle-isosceles top">' + content + '</p> ' +
-              '</div>').parseEmotion();
+              '</div>' +
+              '<div style="clear: both;"></div>'
+
+              : '<div class="speech_item">'
+              + '<img src="http://lorempixel.com/38/38/?' + from_client_id + '" class="user_icon" /> '
+              + from_client_name
+              + '<br> ' + time +
+              '<div style="clear:both;"></div>' +
+              '<p class="triangle-isosceles top">' + content + '</p> ' +
+              '</div>';
+
+          $("#dialog").append(sessionHtml).parseEmotion();
       }
 
       $(function () {
@@ -340,7 +361,7 @@
                         reader.readAsDataURL(blob);
                         let that = this;
                         reader.onload = function (e) {
-                            $(that).val($(that).val()+this.result+"=");
+                            $(that).val($(that).val() + this.result + "=");
                             onSubmit();
                             // sendImg(this.result);
                         };

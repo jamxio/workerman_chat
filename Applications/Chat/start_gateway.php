@@ -11,6 +11,8 @@
  * @link http://www.workerman.net/
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
+use GatewayWorker\Lib\Context;
 use \Workerman\Worker;
 use \GatewayWorker\Gateway;
 use \Workerman\Autoloader;
@@ -29,8 +31,12 @@ $gateway = new class("Websocket://0.0.0.0:7272") extends Gateway{
             isset($aa['content']['img']) && $aa['content'] = urlencode($aa['content']);
             $data = json_encode($aa);
         }
+        if($aa['type']== 'ping' || $aa['type'] == 'login'){
+            $gateWayHeader = $connection->gatewayHeader;
+            $clientId = Context::addressToClientId($gateWayHeader['local_ip'], $gateWayHeader['local_port'],$gateWayHeader['connection_id']);
+            $connection->send(json_encode(['type'=>'id','id' => $clientId]));
+        }
         return parent::onClientMessage($connection, $data);
-        // $connection->send(json_encode(['type'=>'id','id' => $connection->id]));
     }
 };
 // 设置名称，方便status时查看
