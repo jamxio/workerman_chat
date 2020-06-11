@@ -172,8 +172,8 @@
       }
 
       // 发言
-      function say(from_client_id, from_client_name, content, time, isPictur = false) {
-          let isYou = yourId == from_client_id;
+      function say(from_client_id, from_client_name, content, time) {
+          content = '' + content;//纯数字转字符串否则replace报错；
           //解析新浪微博图片
           content = content.replace(/(http|https):\/\/[\w]+.sinaimg.cn[\S]+(jpg|png|gif)/gi, function (img) {
                   return "<a target='_blank' href='" + img + "'>" + "<img src='" + img + "'>" + "</a>";
