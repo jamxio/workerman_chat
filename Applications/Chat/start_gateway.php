@@ -16,7 +16,7 @@ use GatewayWorker\Lib\Context;
 use \Workerman\Worker;
 use \GatewayWorker\Gateway;
 use \Workerman\Autoloader;
-
+ini_set('date.timezone','PRC');
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 // gateway 进程
