@@ -93,11 +93,6 @@
                   }
                   //{"type":"say","from_client_id":xxx,"to_client_id":"all/client_id","content":"xxx","time":"xxx"}
                   say(data['from_client_id'], data['from_client_name'], content, data['time']);
-                  showMess({
-                      name: data['from_client_name'],
-                      img: 'http://lorempixel.com/38/38/?' + data['from_client_id']
-                  }, data['content']);
-                  autoScroll();//自动滚动
                   break;
               // 用户退出 更新用户列表
               case 'logout':
@@ -176,12 +171,12 @@
           content = '' + content;//纯数字转字符串否则replace报错；
           //解析新浪微博图片
           content = content.replace(/(http|https):\/\/[\w]+.sinaimg.cn[\S]+(jpg|png|gif)/gi, function (img) {
-                  return "<a target='_blank' href='" + img + "'>" + "<img src='" + img + "'>" + "</a>";
+                  return "<a target='_blank' href='" + img + "'>" + "<img src='" + img + "' style='max-width: 100%;'>" + "</a>";
               }
           );
           content = content.replace(/data:image[\S]+=?/gi, function (img) {
                   img = img.replace(/=/g, '');
-                  return "<a target='_blank' href='" + img + "'>" + "<img src='" + img + "'>" + "</a>";
+                  return "<img src='" + img + "' style='max-width: 100%;'>";
               }
           );
           //解析url
@@ -206,7 +201,7 @@
               '<div style="clear: both;"></div>'
 
               : '<div class="speech_item">'
-              + '<img src="http://lorempixel.com/38/38/?' + from_client_id + '" class="user_icon" /> '
+              + '<img src="http://lorempixel.com/38/38/?' + from_client_id + '" class="user_icon" style="max-width: 100%;"/> '
               + from_client_name
               + '<br> ' + time +
               '<div style="clear:both;"></div>' +
@@ -214,6 +209,11 @@
               '</div>';
 
           $("#dialog").append(sessionHtml).parseEmotion();
+          isYourself || showMess({
+              name: from_client_name,
+              img: 'http://lorempixel.com/38/38/?' + from_client_id
+          }, content);
+          autoScroll();//自动滚动
       }
 
       $(function () {

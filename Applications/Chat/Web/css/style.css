@@ -79,6 +79,8 @@ body
     background:-moz-linear-gradient(#D3FF93, #EFFFD7);
     background:-o-linear-gradient(#D3FF93, #EFFFD7);
     background:linear-gradient(#D3FF93, #EFFFD7);
+
+    word-break: break-word;
 }
 
 .triangle-isosceles:after {
